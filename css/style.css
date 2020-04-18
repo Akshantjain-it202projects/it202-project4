@@ -1,0 +1,89 @@
+.mdc-theme--primary {
+    background-color: rgb(77, 77, 77);
+    color: white;
+}
+
+.mdc-theme--white {
+    color: white;
+}
+
+body {
+    background-image: url('../img/worldmap.png');;
+    filter: blur(20%);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+
+.line {
+    display: block;
+    background: linear-gradient(rgba(255, 255, 255, .9), rgba(255, 255, 255, 0));
+    background: -webkit-linear-gradient(rgba(255, 255, 255, .9), rgba(255, 255, 255, 0));
+    height: 2px;
+    width: 45%;
+}
+
+.input_list {
+    width: 100%;
+}
+
+.demo-width-class {
+    width: 100%;
+}
+
+.mdc-select:not(.mdc-select--disabled) .mdc-select__anchor {
+    background-color: rgba(0, 0, 0, 0.329);
+}
+
+.mdc-select:not(.mdc-select--disabled) .mdc-select__selected-text:hover {
+    border-bottom-color: rgba(165, 165, 165, 0.87);
+}
+
+.mdc-select:not(.mdc-select--disabled) .mdc-select__selected-text {
+    border-bottom-color: whitesmoke;
+}
+
+.mdc-select:not(.mdc-select--disabled) .mdc-select__selected-text {
+    color: rgba(196, 196, 196, 0.87);
+}
+
+.mdc-select:not(.mdc-select--disabled) .mdc-floating-label {
+    color: white;
+}
+
+.mdc-select:not(.mdc-select--disabled).mdc-select--focused .mdc-floating-label {
+    color: rgba(196, 196, 196, 0.87);
+}
+
+#countries_list {
+    display: none;
+}
+
+#selected_heading {
+    display: none;
+}
+
+#selected_line {
+    display: none;
+}
+
+.mdc-list-divider {
+    border-color: whitesmoke;
+}
+
+.screens {
+    transition: all .3s linear;
+    animation: ease-in-out;
+}
+
+.search_screen  {
+    display: block;
+}
+
+.chart_screen {
+    display: none;
+}
+
+.table_screen {
+    display: none;
+}

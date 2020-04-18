@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>COVID-19 Tracker</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <link rel="android-chrome-icon" href="icons/android-chrome-512x512.png">
@@ -10,13 +10,140 @@
     <meta name="apple-mobile-web-app-status-bar" content="#db4938">
     <meta name="theme-color" content="#db4938">
     <link rel="shortcut icon" type="image/png" href="icons/favicon-32x32.png">
+
+
+    <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
 </head>
 
 <body>
     <main>
+        <header class="mdc-top-app-bar mdc-theme--primary">
+            <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <!-- <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button> -->
+                    <img src="icons/android-chrome-512x512.png" class="ml-2" style="width: 45px; height: auto;">
+                    <span class="mdc-top-app-bar__title mdc-theme--white pl-3">Coronavirus by Countries</span>
+                </section>
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
         
-    </main>
+                    <!-- <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+                        aria-label="Bookmark this page">home</button> -->
+                    <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+                        aria-label="Bookmark this page" onclick="search_press()">search</button>
+                    <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+                        aria-label="Print this page" onclick="table_data()">table_chart</button>
+                    <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+                        aria-label="Download" onclick="chart_data()">multiline_chart</button>
+                </section>
+            </div>
+        </header>
 
-    <script></script>
+        <div class="container-fluid screens search_screen">
+            <div class="row mx-5">
+                <div class="col h-100 align-items-center">
+                    <div style="height: 200px;"></div>
+                    <p class="text-white mb-0" style="font-size: 4rem;">COVID-19 TRACKER</p>
+                    <div class="line"></div>
+                    <p class="text-white mb-3" style="font-size: 1rem;">Select the countries from the list of countries for which you want to see the visualisation.</p>
+                
+                    <div class="input_list mt-5">
+                        <div class="mdc-select">
+                            <div class="mdc-select__anchor demo-width-class mdc-ripple-upgraded">
+                                <i class="mdc-select__dropdown-icon"></i>
+                                <div class="mdc-select__selected-text"></div>
+                                <span class="mdc-floating-label">Select Countries</span>
+                                <span class="mdc-line-ripple"></span>
+                            </div>
+                        
+                            <div class="mdc-select__menu mdc-menu mdc-menu-surface demo-width-class">
+                                <ul id="countries" class="mdc-list">
+                                    <li class="mdc-list-item mdc-list-item--selected" data-value="" aria-selected="true"></li>                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="mdc-button mdc-button--raised mt-2" style="background-color: grey; width: 140px;">
+                                    <span class="mdc-button__ripple"></span>CHART DATA</button>
+                                <button class="mdc-button mdc-button--raised mt-2" style="background-color: grey; width: 140px;">
+                                    <span class="mdc-button__ripple"></span>GRAPH DATA</button>
+                            </div>
+                            <div class="col">
+                                <button class="mdc-button mdc-button--raised mt-2" onclick="deleteCountries()" style="background-color: grey; width: 100px; float: right;">
+                                    <span class="mdc-button__ripple"></span>CLEAR</button>
+                                <button class="mdc-button mdc-button--raised mt-2 mr-1" onclick="addCountry()" style="background-color: grey; width: 100px; float: right;">
+                                    <span class="mdc-button__ripple"></span>ADD</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-5 h-100 align-items-center">
+                    <div style="height: 150px;"></div>
+                    <h2 class="text-white-50 text-uppercase mb-0" id="selected_heading">Selected Countries</h2>
+                    <div class="line mb-2" id="selected_line" style="width: 60%;"></div>
+                    <ul class="mdc-list" id="countries_list" style="max-height: 400px; height: auto; overflow: scroll; color: white; background-color: rgba(0, 0, 0, 0.418); border-radius: 15px;">
+                        <!-- <li class="mdc-list-item" tabindex="0">
+                            <span class="mdc-list-item__text">Item 1 - Division 1</span>
+                        </li> -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid screens chart_screen">
+            <div class="row mx-5">
+                <div class="col h-100 align-items-center">
+                    <div style="height: 90px;"></div>
+                    <h2 class="text-white text-uppercase mb-0">Chart Screen</h2>
+                    <div class="line mb-2" style="width: 60%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container-fluid screens table_screen">
+            <div class="row mx-5">
+                <div class="col h-100 align-items-center">
+                    <div style="height: 90px;"></div>
+                    <h2 class="text-white text-uppercase mb-0">Table Screen</h2>
+                    <div class="line mb-2" style="width: 60%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mdc-snackbar">
+            <div class="mdc-snackbar__surface">
+                <div class="mdc-snackbar__label" role="status" aria-live="polite">
+                    Can't send photo. Retry in 5 seconds.
+                </div>
+            </div>
+        </div>
+
+        <section>
+            <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+                integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+                crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+                integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+                crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+                integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+                crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-3.5.0.js" 
+                integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc="
+                crossorigin="anonymous"></script>
+
+            <script src="js/script.js"></script>
+        </section>
+    </main>
+    
 </body>
 </html>

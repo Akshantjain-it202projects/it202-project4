@@ -14,7 +14,7 @@ const assets = [
 
 self.addEventListener("install", installEvent => {
     installEvent.waitUntil(
-        caches.open(staticDevCoffee).then(cache => {
+        caches.open(covid_19_tracker).then(cache => {
             cache.addAll(assets)
         })
     )
