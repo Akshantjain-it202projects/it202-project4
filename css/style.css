@@ -12,6 +12,7 @@ body {
     filter: blur(20%);
     background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     height: 100vh;
 }
 
@@ -72,18 +73,21 @@ body {
 }
 
 .screens {
-    transition: all .3s linear;
+    /* transition: all .3s linear; */
     animation: ease-in-out;
 }
 
 .search_screen  {
     display: block;
+    opacity: 1;
 }
 
 .chart_screen {
     display: none;
+    opacity: 0;
 }
 
 .table_screen {
     display: none;
+    opacity: 0;
 }
