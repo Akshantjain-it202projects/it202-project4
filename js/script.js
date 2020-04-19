@@ -217,13 +217,6 @@ function drawGraph() {
         lineWidth: 2.5,
         curveType: 'curve',
         pointSize: 2,
-        chart: {
-            title: 'COVID-19 Tracker',
-            subtitle: 'Cases by countries and Types',
-            titleTextStyle : {
-                color: '#eee',
-            },
-        },
         width: 1200,
         height: 500,
         axes: {
@@ -232,21 +225,29 @@ function drawGraph() {
             }
         },
         hAxis: {
+            title: 'DATE',
+            titleTextStyle: { color: 'white' },
             format: 'MMM dd, yyyy',
             gridlines: { 
-                color: '#555',
+                color: 'none',
                 opacity: 0.5,
             },
             textStyle: {
                 color: 'whitesmoke',
                 fontSize: 16,
                 bold: true
+            },
+            minorGridlines: {
+                color: 'none',
             }
-            // minValue: 0
         },
         vAxis: {
-            gridlines: { color: '#333' },
+            title: 'No. of Cases',
+            titleTextStyle: {color: 'white'},
+            gridlines: { color: '#444' , multiple: 1000,},
+            minorGridlines: {color: 'none'},
             minValue: 0,
+            maxValue: 'auto',
             textStyle: {
                 color: 'whitesmoke',
                 fontSize: 16,
@@ -255,17 +256,19 @@ function drawGraph() {
             minValue: 5000,
             format: 'short',
             viewWindow: {
-                min: 0
+                min: 0,
+                max: 'auto'
             }
         },
         backgroundColor: {
-            'fill': '#000',
-            'fillOpacity': 1
+            'fill': '#111',
+            'fillOpacity': 0
         },
         legend: {
             textStyle: {
                 color: 'white'
-            }
+            },
+            position: 'bottom'
         }
     };
 
