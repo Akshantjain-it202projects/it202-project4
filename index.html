@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 </head>
 
 <body>
@@ -138,7 +140,8 @@
                 <div style="height: 90px;"></div>
                 <h2 class="text-white text-uppercase mb-0 d-inline-block">Chart Screen</h2>
                 <div class="line mb-2 pl-0" style="width: 60%;"></div>
-                
+
+                <div id="line_chart" class="mx-auto" style="padding: 10px;"></div>
             </div>
         </div>
     </div>
@@ -150,38 +153,13 @@
                 <h2 class="text-white text-uppercase mb-0 d-inline-block">Table Screen</h2>
                 <div class="line mb-2 pl-0" style="width: 60%;"></div>
                 
-
-                <div class="mdc-data-table my-3" style="overflow: scroll; height: 600px;">
+                <div class="mdc-data-table my-3 bg-transparent-50" style="overflow: scroll; height: 75vh;">
                     <table class="mdc-data-table__table" aria-label="COVID">
                         <thead>
                             <tr class="mdc-data-table__header-row country">
-                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Countries</th>
-                                <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader"
-                                    scope="col">Carbs (g)</th>
-                                <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader"
-                                    scope="col">Protein (g)</th>
-                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Comments</th>
                             </tr>
                         </thead>
                         <tbody class="mdc-data-table__content dates">
-                            <tr class="mdc-data-table__row">
-                                <td class="mdc-data-table__cell">Frozen yogurt</td>
-                                <td class="mdc-data-table__cell mdc-data-table__cell--numeric">24</td>
-                                <td class="mdc-data-table__cell mdc-data-table__cell--numeric">4.0</td>
-                                <td class="mdc-data-table__cell">Super tasty</td>
-                            </tr>
-                            <tr class="mdc-data-table__row">
-                                <td class="mdc-data-table__cell">Ice cream sandwich</td>
-                                <td class="mdc-data-table__cell mdc-data-table__cell--numeric">37</td>
-                                <td class="mdc-data-table__cell mdc-data-table__cell--numeric">4.33333333333</td>
-                                <td class="mdc-data-table__cell">I like ice cream more</td>
-                            </tr>
-                            <tr class="mdc-data-table__row">
-                                <td class="mdc-data-table__cell">Eclair</td>
-                                <td class="mdc-data-table__cell mdc-data-table__cell--numeric">24</td>
-                                <td class="mdc-data-table__cell mdc-data-table__cell--numeric">6.0</td>
-                                <td class="mdc-data-table__cell">New filing flavor</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -194,7 +172,7 @@
     <div class="mdc-snackbar">
         <div class="mdc-snackbar__surface">
             <div class="mdc-snackbar__label" role="status" aria-live="polite">
-                Can't send photo. Retry in 5 seconds.
+                
             </div>
         </div>
     </div>
@@ -212,7 +190,6 @@
         <script src="https://code.jquery.com/jquery-3.5.0.js" 
             integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc="
             crossorigin="anonymous"></script>
-
         <script src="js/script.js"></script>
     </section>
 </main>

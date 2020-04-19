@@ -1,3 +1,6 @@
+google.charts.load('current', { 'packages': ['corechart'] });
+google.charts.setOnLoadCallback(drawGraph);
+
 const select = new mdc.select.MDCSelect(document.querySelector('.mdc-select'));
 const snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
 const radio = new mdc.radio.MDCRadio(document.querySelector('.mdc-radio'));
@@ -6,15 +9,10 @@ const formField = new mdc.formField.MDCFormField(document.querySelector('.mdc-fo
 const apiEndpoint = "https://pomber.github.io/covid19/timeseries.json";
 
 let countries = [];
-let values = [];
 let dates = [];
-let selected_countries = ["Afghanistan", "India"];
+let selected_countries = ["India", "Afghanistan"];
 let covid_data;
-let last_used;
 let current_cases = "confirmed";
-
-let current_table_case;
-let current_chart_case;
 
 let dates_table;
 
@@ -24,12 +22,7 @@ let tableScreen = document.querySelector(".table_screen");
 let options = document.getElementsByName("radios");
 
 formField.input = radio;
-
 let tabIndex = 0;
-let table_done = 0;
-let chart_done = 0;
-
-let table_first = true;
 
 for (let i = 0; i < options.length; ++i) {
     options[i].onclick = function () {
@@ -46,15 +39,12 @@ fetch(apiEndpoint)
 .then(data =>{
 
     covid_data = data;
-    // console.log(data);
-    // console.log(covid_data);
-    // console.log(data == covid_data);
     let list = document.getElementById("countries");
 
     for (let country in data) countries.push(country);
 
     for (let country in countries) {
-        values.push(data[countries[country]]);
+        // values.push(data[countries[country]]);
         
         let option = document.createElement("li");
         option.classList.add("mdc-list-item");
@@ -157,7 +147,7 @@ function chart_data() {
     
     var head = document.querySelector(".chart_screen h2");
     head.innerHTML = "CHART SCREEN:  " + current_cases + " cases";
-    create_graph();
+    drawGraph();
 }
 
 function table_data() {
@@ -187,8 +177,106 @@ function table_data() {
     create_table();
 }
 
-function create_graph() {
+function drawGraph() {
+    var chart_data = new google.visualization.DataTable();
+
+    chart_data.addColumn('date', 'Date');
+
+    for (let country in selected_countries) {
+        chart_data.addColumn('number', selected_countries[country]);
+    }
+
+    var wholeRowData = [];
+    for (let dateIndex = 0; dateIndex < dates.length; ++dateIndex) {
+        let rowData = [];
+        rowData.push(new Date(dates[dateIndex]));
+
+        for (let countryIndex = 0; countryIndex < selected_countries.length; ++countryIndex) {
+
+            if (current_cases == "confirmed") {
+                rowData.push(covid_data[selected_countries[countryIndex]][dateIndex].confirmed);
+            }
+            else if (current_cases == "deaths") {
+                rowData.push(covid_data[selected_countries[countryIndex]][dateIndex].deaths);
+            }
+            else  {
+                rowData.push(covid_data[selected_countries[countryIndex]][dateIndex].recovered);
+            }
+        }
+
+        wholeRowData.push(rowData);
+    }
+    chart_data.addRows(wholeRowData);
+
+    var options = {
+        selectionMode: 'multiple',
+        tooltip: { trigger: 'selection' },
+        aggregationTarget: 'category',
+        stroke: '#888',
+        strokeWidth: 1,
+        lineWidth: 2.5,
+        curveType: 'curve',
+        pointSize: 2,
+        chart: {
+            title: 'COVID-19 Tracker',
+            subtitle: 'Cases by countries and Types',
+            titleTextStyle : {
+                color: '#eee',
+            },
+        },
+        width: 1200,
+        height: 500,
+        axes: {
+            x: {
+                100: { side: 'bottom' }
+            }
+        },
+        hAxis: {
+            format: 'MMM dd, yyyy',
+            gridlines: { 
+                color: '#555',
+                opacity: 0.5,
+            },
+            textStyle: {
+                color: 'whitesmoke',
+                fontSize: 16,
+                bold: true
+            }
+            // minValue: 0
+        },
+        vAxis: {
+            gridlines: { color: '#333' },
+            minValue: 0,
+            textStyle: {
+                color: 'whitesmoke',
+                fontSize: 16,
+                bold: true
+            },
+            minValue: 5000,
+            format: 'short',
+            viewWindow: {
+                min: 0
+            }
+        },
+        backgroundColor: {
+            'fill': '#000',
+            'fillOpacity': 1
+        },
+        legend: {
+            textStyle: {
+                color: 'white'
+            }
+        }
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById("line_chart"));
+
+    chart.draw(chart_data, options);
 }
+
+// function initialise_chart(chart_data) {
+    
+// }
 
 function create_table() {
     clear_data_table();
@@ -239,19 +327,16 @@ function insert_raw_data() {
 
 function insert_required_data() {
     let rows = document.querySelector(".dates").children;
-    console.log(rows);
 
     for (let i = 0; i < rows.length; ++i) {
         let each_row = rows[i];
 
-        for (let j = table_done; j < selected_countries.length; ++j) {
+        for (let j = 0; j < selected_countries.length; ++j) {
 
             let rowdata = document.createElement("td");
             rowdata.classList.add("mdc-data-table__cell");
             rowdata.classList.add("mdc-data-table__cell--numeric")
             rowdata.setAttribute("value", "data");
-
-            // console.log(covid_data[selected_countries[j]][i].confirmed);
 
             if (current_cases == "confirmed"){
                 rowdata.innerHTML = covid_data[selected_countries[j]][i].confirmed;
