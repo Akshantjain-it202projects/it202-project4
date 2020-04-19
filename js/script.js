@@ -10,7 +10,7 @@ const apiEndpoint = "https://pomber.github.io/covid19/timeseries.json";
 
 let countries = [];
 let dates = [];
-let selected_countries = ["India", "Afghanistan"];
+let selected_countries = [];
 let covid_data;
 let current_cases = "confirmed";
 
