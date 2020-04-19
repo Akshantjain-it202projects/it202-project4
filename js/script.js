@@ -3,17 +3,20 @@ const snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snack
 const radio = new mdc.radio.MDCRadio(document.querySelector('.mdc-radio'));
 const formField = new mdc.formField.MDCFormField(document.querySelector('.mdc-form-field'));
 
-
 const apiEndpoint = "https://pomber.github.io/covid19/timeseries.json";
 
 let countries = [];
 let values = [];
 let dates = [];
-let selected_countries_table = ["Afghanistan"];
-let selected_countries_chart = ["table"];
+let selected_countries = ["Afghanistan", "India"];
 let covid_data;
+let last_used;
+let current_cases = "confirmed";
 
-let headingThere = false;
+let current_table_case;
+let current_chart_case;
+
+let dates_table;
 
 let searchScreen = document.querySelector(".search_screen");
 let chartScreen = document.querySelector(".chart_screen");
@@ -23,18 +26,29 @@ let options = document.getElementsByName("radios");
 formField.input = radio;
 
 let tabIndex = 0;
-let table_done = false;
-let chart_done = false;
+let table_done = 0;
+let chart_done = 0;
 
 let table_first = true;
 
+for (let i = 0; i < options.length; ++i) {
+    options[i].onclick = function () {
+        for (let j=0; j<options.length; ++j)    {
+            if (options[j].checked){
+                current_cases = options[j].value;
+            }
+        }
+    }
+}
 
 fetch(apiEndpoint)
 .then(response => {return response.json()})
 .then(data =>{
 
     covid_data = data;
+    // console.log(data);
     // console.log(covid_data);
+    // console.log(data == covid_data);
     let list = document.getElementById("countries");
 
     for (let country in data) countries.push(country);
@@ -60,10 +74,6 @@ fetch(apiEndpoint)
 })
 .catch(err => alert(err))
 
-// $(document).ready(function () {
-    
-// })
-
 function addCountry() {
     
     if (select.value == "") {
@@ -71,7 +81,7 @@ function addCountry() {
         snackbar.open();
         return;
     }
-    if (selected_countries_table.includes(select.value))  {
+    if (selected_countries.includes(select.value))  {
         snackbar.labelText = "Country already in the list!";
         snackbar.open();
         return;
@@ -90,8 +100,7 @@ function addCountry() {
     item.appendChild(item_label);
     list.appendChild(item);
 
-    selected_countries_table.push(select.value);
-    selected_countries_chart.push(select.value);
+    selected_countries.push(select.value);
 
 
     let divider = document.createElement("li");
@@ -104,10 +113,6 @@ function addCountry() {
     document.getElementById("countries_list").style.display = 'block';
     document.getElementById("selected_heading").style.display = 'block';
     document.getElementById("selected_line").style.display = 'block';
-
-    table_done = false;
-    chart_done = false;
-
 };
 
 var deleteCountries = () => {
@@ -117,8 +122,7 @@ var deleteCountries = () => {
         list.removeChild(list.firstChild);
     }
 
-    selected_countries_table = [];
-    selected_countries_chart = [];
+    selected_countries = [];
 
     document.getElementById("countries_list").style.display = 'none';
     document.getElementById("selected_heading").style.display = 'none';
@@ -137,7 +141,7 @@ function search_press() {
 }
 
 function chart_data() {
-    if (selected_countries_chart.length == 0 && !chart_done) {
+    if (selected_countries.length == 0) {
         snackbar.labelText = "No Countries Selected!";
         snackbar.open();
         return;
@@ -150,24 +154,14 @@ function chart_data() {
     $(".search_screen").animate({ opacity: '0' }, 800);
     $(".chart_screen").animate({ opacity: '1' }, 800);
     $(".table_screen").animate({ opacity: '0' }, 800);
-
-    let current;
-
-    for (let i = 0; i < options.length; ++i) {
-        if (options[i].checked)
-            current = options[i].value;
-    }
+    
     var head = document.querySelector(".chart_screen h2");
-    head.innerHTML += ":  " + current + " cases";
-
+    head.innerHTML = "CHART SCREEN:  " + current_cases + " cases";
     create_graph();
-
 }
 
 function table_data() {
-    if (table_first)    new_table();
-
-    if (selected_countries_table.length == 0 && !table_done) {
+    if (selected_countries.length == 0) {
         snackbar.labelText = "No Countries Selected!";
         snackbar.open();
         return;
@@ -187,56 +181,88 @@ function table_data() {
     $(".chart_screen").animate({ opacity: '0' }, 800);
     $(".table_screen").animate({ opacity: '1' }, 800);
 
-    let current;
-
-    for (let i = 0; i < options.length; ++i) {
-        if (options[i].checked)
-            current = options[i].value;
-    }
     var head = document.querySelector(".table_screen h2");
-    head.innerHTML += ":  " + current + " cases";
-
-    // console.log(covid_data);
+    head.innerHTML = "TABLE SCREEN:  " + current_cases + " cases";
 
     create_table();
 }
 
+function create_graph() {
+}
+
 function create_table() {
-    if (table_done) return;
+    clear_data_table();
+    insert_raw_data();
+    insert_required_data();
+}
 
-    let heads = document.querySelector(".mdc-data-table__header-row");
+function clear_data_table() {
+    $(".country").empty();
+    $(".dates").empty();
+}
 
-    for (let i = 0; i<selected_countries_table.length; ++i) {
-        let header = document.createElement("td");
-        header.classList.add("mdc-data-table__header-cell");
-        header.classList.add("mdc-data-table__header-cell--numeric")
-        header.setAttribute("role", "columnheader");
-        header.setAttribute("scope", "col");
-        header.innerHTML = [selected_countries_table[i]];
-        heads.appendChild(header);
+function insert_raw_data() {
+
+    let tr = document.querySelector(".country");
+
+    let th_head = document.createElement("th");
+    th_head.classList.add("mdc-data-table__header-cell");
+    th_head.setAttribute("role", "columnheader");
+    th_head.innerHTML = "Countries";
+    tr.appendChild(th_head);
+
+    for (let country in selected_countries) {
+        let th = document.createElement("th");
+        th.classList.add("mdc-data-table__header-cell");
+        th.classList.add("mdc-data-table__header-cell--numeric");
+        th.setAttribute("role", "columnheader");
+        th.innerHTML = selected_countries[country];
+
+        tr.appendChild(th);
     }
 
-    table_done = true;
+    let dates_section = document.querySelector(".dates");
 
-    selected_countries_table = [];
-}
+    for (let date in dates) {
 
-function create_graph() {
-    if (chart_done) return;
-}
-
-function new_table() {
-    let rows = document.querySelector(".mdc-data-table__content");
-
-    for (let i=0; i<dates.length; ++i)  {
         let row = document.createElement("tr");
         row.classList.add("mdc-data-table__row");
 
-        let rowdata = document.createElement("td");
-        rowdata.classList.add("mdc-data-table__cell");
-        rowdata.innerHTML = dates[i];
+        let row_data = document.createElement("td");
+        row_data.classList.add("mdc-data-table__cell");
+        row_data.innerHTML = dates[date];
 
-        row.appendChild(rowdata);
-        rows.appendChild(row);
+        row.appendChild(row_data);
+        dates_section.appendChild(row);
+    }
+}
+
+function insert_required_data() {
+    let rows = document.querySelector(".dates").children;
+    console.log(rows);
+
+    for (let i = 0; i < rows.length; ++i) {
+        let each_row = rows[i];
+
+        for (let j = table_done; j < selected_countries.length; ++j) {
+
+            let rowdata = document.createElement("td");
+            rowdata.classList.add("mdc-data-table__cell");
+            rowdata.classList.add("mdc-data-table__cell--numeric")
+            rowdata.setAttribute("value", "data");
+
+            // console.log(covid_data[selected_countries[j]][i].confirmed);
+
+            if (current_cases == "confirmed"){
+                rowdata.innerHTML = covid_data[selected_countries[j]][i].confirmed;
+            }
+            if (current_cases == "deaths"){
+                rowdata.innerHTML = covid_data[selected_countries[j]][i].deaths;
+            }
+            if (current_cases == "recovered"){
+                rowdata.innerHTML = covid_data[selected_countries[j]][i].recovered;
+            }
+            each_row.appendChild(rowdata);
+        }
     }
 }
